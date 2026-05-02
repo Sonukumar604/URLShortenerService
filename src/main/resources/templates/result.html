@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Short URL Generated</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .success-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .success-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            color: #28a745;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .result-box {
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .result-item {
+            margin-bottom: 15px;
+        }
+
+        .result-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-label {
+            color: #666;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            color: #333;
+            font-size: 14px;
+            word-break: break-all;
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #667eea;
+            font-family: 'Courier New', monospace;
+        }
+
+        .short-url-highlight {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: #e9ecef;
+            color: #333;
+            border: 2px solid #dee2e6;
+        }
+
+        .btn-secondary:hover {
+            background-color: #dee2e6;
+        }
+
+        .info-section {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 13px;
+            color: #155724;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-header">
+            <div class="success-icon">✅</div>
+            <h1>Short URL Created!</h1>
+            <p class="subtitle">Your URL has been successfully shortened</p>
+        </div>
+
+        <div class="result-box">
+            <div class="result-item">
+                <div class="result-label">Short Code</div>
+                <div class="result-value" th:text="${response.shortCode}"></div>
+            </div>
+
+            <div class="result-item">
+                <div class="result-label">Short URL</div>
+                <div class="result-value short-url-highlight" th:text="${response.shortUrl}"></div>
+            </div>
+
+            <div class="result-item">
+                <div class="result-label">Original URL</div>
+                <div class="result-value" th:text="${response.originalUrl}"></div>
+            </div>
+
+            <div class="result-item">
+                <div class="result-label">Created At</div>
+                <div class="result-value" th:text="${#temporals.format(response.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></div>
+            </div>
+
+            <div class="result-item" th:if="${response.expiresAt}">
+                <div class="result-label">Expires At</div>
+                <div class="result-value" th:text="${#temporals.format(response.expiresAt, 'yyyy-MM-dd HH:mm:ss')}"></div>
+            </div>
+
+            <div class="result-item" th:unless="${response.expiresAt}">
+                <div class="result-label">Status</div>
+                <div class="result-value">No expiration</div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-primary" onclick="copyToClipboard()">📋 Copy Link</button>
+            <button class="btn-secondary" onclick="window.location.href='/'">➕ Shorten Another</button>
+        </div>
+
+        <div class="info-section">
+            <strong>✨ Share your short URL:</strong><br>
+            Click "Copy Link" to copy to clipboard, then share with anyone. Your short URL will redirect to the original link.
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const shortUrl = document.querySelector('.short-url-highlight').textContent;
+            navigator.clipboard.writeText(shortUrl).then(() => {
+                alert('Copied to clipboard: ' + shortUrl);
+            }).catch(() => {
+                alert('Failed to copy');
+            });
+        }
+    </script>
+</body>
+</html>
